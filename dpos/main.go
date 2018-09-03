@@ -41,7 +41,7 @@ func main() {
 	//广播候选人其他节点
 	blockchain.SendDelegates(blockChain, delegate)
 
-	//4.每隔1秒产生一笔交易发送
+	//4.交易产生并发送至其他节点
 	go blockchain.GenTransfer(blockChain)
 
 	var m sync.Mutex
@@ -53,7 +53,7 @@ func main() {
 	blockchain.SortDelegateByVotes(delegates)
 	//7.获取投票结果，并产生21个受托人
 	if len(delegates) >= utils.LimitDeledateNum {
-		var delegateMap map[string]*blockchain.Delegate
+		var delegateMap =make(map[string]*blockchain.Delegate)
 		//将失去受托人节点设置为失去受托人
 		for i, tempDelegate := range delegates {
 			if i < len(delegates)-utils.LimitDeledateNum {
@@ -84,6 +84,6 @@ func main() {
 	/*前面步骤为准备交易；准备受托人；接下来开始出块工作，
 	*启动节点监听
 	 */
-	blockchain.StartServer(port, blockChain)
+	blockchain.StartServer(blockChain)
 
 }

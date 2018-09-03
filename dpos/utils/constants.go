@@ -9,7 +9,7 @@ const TransferChan="transfer"
 const DelegateFlag="delegate_f"
 
 
-const CoinNum = 1000
+const CoinNum = 20
 const LimitDeledateNum = 1
 
 //网络传输前半部分和后半部分长度区分

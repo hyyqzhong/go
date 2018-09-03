@@ -156,18 +156,30 @@ func CreateGenesisBlock(db *bolt.DB) *BlockChain {
 //工作量计算hash函数出块
 func newBlock(preBlock Block, transfers []Transfer,blockFlag bool) *Block {
 	//忽略每条交易记录正确性验证（数字签名等验证）
+	log.Println("start to caculate new Block")
 	transMarkelHash := CalTransHash(transfers)
+	log.Println("newBlock transMarkelHash is ",transMarkelHash)
 	timestemp := time.Now().Unix()
 	var nounce int64 = 0
 	var block *Block
+
+	//这儿尝试了3秒退出写法，没写成功：
+	//timeout := time.After(time.Second * 10)
+	//select {
+	//case <-time.After(time.Second * time.Duration(3)):
+	//	code
+	//}
+
 	for {
 		if blockFlag{
 			block = &Block{preBlock.Height + 1, "", preBlock.CurHash, timestemp, transMarkelHash, preBlock.Difficulty + 1, nounce, transfers}
 			tempHash := CaculateBlockHash(block)
-			if  strings.HasPrefix(tempHash, "00000000") { //区块工作量计算
+			if  strings.HasPrefix(tempHash, "000") { //区块工作量计算
+				log.Println("current newBlock hash is ",tempHash)
 				block.CurHash = tempHash
 				break
 			} else {
+				log.Println("current  hash not correct is ",tempHash)
 				timestemp = time.Now().Unix()
 				nounce++
 			}
@@ -176,6 +188,7 @@ func newBlock(preBlock Block, transfers []Transfer,blockFlag bool) *Block {
 			break
 		}
 	}
+	log.Println("end to caculate newBlock ",block)
 	return block
 }
 

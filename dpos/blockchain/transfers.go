@@ -78,11 +78,9 @@ func GetAllTransfers(db *bolt.DB) []Transfer {
 	err:=db.View(func(tx *bolt.Tx) error {
 		bucket:=tx.Bucket([]byte(database.TransfersBucket))
 		cursor:=bucket.Cursor()
-		var i=0
 		for k,v:=cursor.First();k!=nil;k,v=cursor.Next(){
 			transfer:=*DeserializeTransfer(v)
-			transfers[i]=transfer
-			i++
+			transfers=append(transfers,transfer)
 		}
 		return nil
 	})
@@ -108,8 +106,8 @@ func DeserializeTransfer(encoderTransfer []byte) *Transfer {
 func CalTransHash(transfers []Transfer) string{
 	if(len(transfers)>0){
 		var hashs []string
-		for i,transfer:= range transfers{
-			hashs[i]=calTransferHash(transfer)
+		for _,transfer:= range transfers{
+			hashs =append(hashs,calTransferHash(transfer))
 		}
 		tempHashs:=iteratorTranHash(hashs)
 		return tempHashs[0]
@@ -132,10 +130,10 @@ func iteratorTranHash(hashs []string) []string{
 	j:=0
 	for i:=0;i<len(hashs);i++{
 		if i%2==1 {//两两合并
-			tempHashs[j]=utils.CalculateHash(hashs[i]+hashs[i-1])
+			tempHashs=append(tempHashs,utils.CalculateHash(hashs[i]+hashs[i-1]))
 			j++
 		}else if i==(len(hashs)-1){//说明单数
-			tempHashs[j]=hashs[i]
+			tempHashs=append(tempHashs,hashs[i])
 			break
 		}
 	}

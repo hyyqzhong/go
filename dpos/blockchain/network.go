@@ -1,7 +1,6 @@
 package blockchain
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"time"
@@ -19,10 +18,10 @@ var NodeAddress string
 var DelegateFlag= false
 var blockFlag=true
 
-func StartServer(nodeAddress string, blockChain *BlockChain) {
+func StartServer(blockChain *BlockChain) {
 
-	log.Println("start server node address is ", nodeAddress)
-	listen, err := net.Listen(protocol, nodeAddress)
+	log.Println("start server node address is ", NodeAddress)
+	listen, err := net.Listen(protocol, NodeAddress)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -197,10 +196,11 @@ func SendDelegateFlag(addressUrl string, tempFlag bool) {
 
 //每隔一秒生成交易
 func GenTransfer(blockchain *BlockChain){
-	for{
-		time.Sleep(time.Second)
+	for i:=0;i<500;i++{
+		//time.Sleep(time.Second)
 		transfer:=Transfer{utils.GetUuid(),"zhangsan","lisi",float64(0.00),NodeAddress}
-		fmt.Println("genTransfer is ",transfer)
+		AddTransfer(blockchain.db,&transfer)
+		log.Println("genTransfer is ",transfer)
 		SendDelegatesTransfer(blockchain,&transfer)
 	}
 }

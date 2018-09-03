@@ -26,6 +26,7 @@ func TestAddAndCancelVote(t *testing.T){
 	//5.循环投票和取消投票
 	AddAndCancelVote(coiners, blockChain, &m)
 
-
-
 }
+
+
+
